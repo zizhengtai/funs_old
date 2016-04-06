@@ -58,7 +58,7 @@ struct Monad<Id> : public Applicative<Id> {
     template<typename B, typename A, typename Fn>
     static F<B> flatMap(const F<A> &fa, Fn f)
     {
-        return flatten(map(fa, f));
+        return f(fa.value);
     }
 };
 

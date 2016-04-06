@@ -74,9 +74,7 @@ struct Monad<std::vector> : public Applicative<std::vector> {
     {
         F<A> result;
         for (const auto &fa: ffa) {
-            for (const auto &a: fa) {
-                result.emplace_back(a);
-            }
+            result.insert(result.end(), fa.cbegin(), fa.cend());
         }
 
         return result;
@@ -85,7 +83,13 @@ struct Monad<std::vector> : public Applicative<std::vector> {
     template<typename B, typename A, typename Fn>
     static F<B> flatMap(const F<A> &fa, Fn f)
     {
-        return flatten(map(fa, f));
+        F<B> fb;
+        for (const auto &a: fa) {
+            const auto faa = f(a);
+            fb.insert(fb.end(), faa.cbegin(), faa.cend());
+        }
+
+        return fb;
     }
 };
 
