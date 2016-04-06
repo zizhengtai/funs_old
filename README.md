@@ -5,6 +5,36 @@
 
 Funs is a functional programming library for C++. It is currently only a proof of concept, but is under active development.
 
+## Examples
+
+```cpp
+std::vector<int> v1{1, 2, 3};
+
+auto v2 = on(v1)
+    .map([](int x) { return x * x; })
+    .flatMap([](int x) {
+        auto s = std::to_string(x) + "!";
+        return std::vector<std::string>{s, s};
+    })
+    .val();
+
+// v2 == std::vector<std::string>{"1!", "1!", "4!", "4!", "9!", "9!"}
+```
+
+## Supported concepts
+
+* Functor (`map`)
+* Apply (`ap`)
+* Applicative (`pure`)
+* Monad (`flatMap`)
+
+## Default implementations
+
+* `funs::Id`
+* `std::list`
+* `std::vector`
+* `std::shared_ptr`
+
 ## License
 
 This project is licensed under the MIT license. See the [LICENSE](./LICENSE) file for details.
