@@ -49,9 +49,9 @@ private:
 
 public:
     template<typename A>
-    static F<A> pure(const A &a)
+    static F<A> pure(const A &x)
     {
-        return std::make_shared<A>(a);
+        return std::make_shared<A>(x);
     }
 };
 

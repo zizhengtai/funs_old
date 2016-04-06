@@ -62,9 +62,9 @@ private:
 
 public:
     template<typename A>
-    static F<A> pure(const A &a)
+    static F<A> pure(const A &x)
     {
-        return {a};
+        return {x};
     }
 };
 
