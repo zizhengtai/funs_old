@@ -36,7 +36,19 @@ Id<T> makeId(const T &t)
 }
 
 template<template <typename...> class F>
-struct DefaultImpl;
+struct Functor;
+
+template<template <typename...> class F>
+struct Apply;
+
+template<template <typename...> class F>
+struct Applicative;
+
+template<template <typename...> class F>
+struct Monad;
+
+template<template <typename...> class F>
+struct Impl;
 
 }
 

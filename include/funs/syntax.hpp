@@ -5,7 +5,7 @@
 
 namespace funs {
 
-template<template <typename...> class F, typename A, typename Impl>
+template<template <typename...> class F, typename A, typename I>
 struct FunsOps {
 private:
     F<A> _val;
@@ -22,25 +22,25 @@ public:
     // Functor
 
     template<typename Fn>
-    FunsOps<F, Ret<Fn, A>, Impl> map(Fn f) const
+    FunsOps<F, Ret<Fn, A>, I> map(Fn f) const
     {
-        return Impl::map(_val, f);
+        return I::map(_val, f);
     }
 
     // Apply
 
     template<typename Fn>
-    FunsOps<F, Ret<Fn, A>, Impl> ap(const F<Fn> &ff) const
+    FunsOps<F, Ret<Fn, A>, I> ap(const F<Fn> &ff) const
     {
-        return Impl::ap(_val, ff);
+        return I::ap(_val, ff);
     }
 
     // Monad
 
     template<typename Fn>
-    FunsOps<F, typename Impl::template ElemType<Ret<Fn, A>>, Impl> flatMap(Fn f) const
+    FunsOps<F, typename I::template ElemType<Ret<Fn, A>>, I> flatMap(Fn f) const
     {
-        return Impl::flatMap(_val, f);
+        return I::flatMap(_val, f);
     }
 };
 
@@ -51,9 +51,9 @@ FunsOps<F, A, FF> on(const F<A> &fa)
 }
 
 template<template <typename...> class F, typename A>
-FunsOps<F, A, DefaultImpl<F>> on(const F<A> &fa)
+FunsOps<F, A, Impl<F>> on(const F<A> &fa)
 {
-    return FunsOps<F, A, DefaultImpl<F>>(fa);
+    return FunsOps<F, A, Impl<F>>(fa);
 }
 
 }

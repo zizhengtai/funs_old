@@ -6,46 +6,81 @@
 namespace funs {
 
 template<>
-struct DefaultImpl<Id> {
+struct Functor<Id> {
 private:
     template<typename A>
     using F = Id<A>;
 
 public:
-    template<typename FA>
-    using ElemType = typename FA::type;
-
-    // Functor
-
     template<typename A, typename Fn>
     static F<Ret<Fn, A>> map(const F<A> &fa, Fn f)
     {
         return f(fa.val);
     }
+};
 
-    // Apply
+template<>
+struct Apply<Id> : Functor<Id> {
+private:
+    template<typename A>
+    using F = Id<A>;
+
+    using Base = Functor<Id>;
+
+public:
+    using Base::map;
 
     template<typename A, typename Fn>
     static F<Ret<Fn, A>> ap(const F<A> &fa, const F<Fn> &ff)
     {
         return ff.val(fa.val);
     }
+};
 
-    // Applicative
+template<>
+struct Applicative<Id> : Apply<Id> {
+private:
+    template<typename A>
+    using F = Id<A>;
+
+    using Base = Apply<Id>;
+
+public:
+    using Base::map;
+    using Base::ap;
 
     template<typename A>
     static F<A> pure(const A &a)
     {
         return a;
     }
+};
 
-    // Monad
+template<>
+struct Monad<Id> : Applicative<Id> {
+private:
+    template<typename A>
+    using F = Id<A>;
+
+    using Base = Applicative<Id>;
+
+public:
+    using Base::map;
+    using Base::ap;
+    using Base::pure;
+
+    template<typename FA>
+    using ElemType = typename FA::type;
 
     template<typename A, typename Fn>
     static F<ElemType<Ret<Fn, A>>> flatMap(const F<A> &fa, Fn f)
     {
         return f(fa.val);
     }
+};
+
+template<>
+struct Impl<Id> : Monad<Id> {
 };
 
 }
