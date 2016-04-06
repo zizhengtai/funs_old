@@ -2,6 +2,7 @@
 #define FUNS_CORE_HPP
 
 #include <type_traits>
+#include <iostream>
 
 namespace funs {
 
@@ -10,19 +11,32 @@ using Ret = typename std::result_of<Fn(Args...)>::type;
 
 template<typename T>
 struct Id {
-    const T value;
-
     using type = T;
 
-    Id(const T &t) : value(t)
-    {
-    }
+    const T val;
+
+    // Copy constructors
+    Id(const T &value) : val(value) {}
+    Id(const Id<T> &that) : val(that.val) {}
+
+    // Move constructors
+    Id(T &&value) : val(std::move(value)) {}
+    Id(Id<T> &&that) : val(std::move(that.val)) {}
 
     operator T() const
     {
-        return value;
+        return val;
     }
 };
+
+template<typename T>
+Id<T> makeId(const T &t)
+{
+    return t;
+}
+
+template<template <typename...> class F>
+struct DefaultImpl;
 
 }
 
