@@ -12,6 +12,9 @@ private:
     using F = Id<A>;
 
 public:
+    template<typename FA>
+    using ElemType = typename FA::type;
+
     template<typename A, typename Fn>
     static F<Ret<Fn, A>> map(const F<A> &fa, Fn f)
     {
@@ -25,11 +28,7 @@ private:
     template<typename A>
     using F = Id<A>;
 
-    using Base = Functor<Id>;
-
 public:
-    using Base::map;
-
     template<typename A, typename Fn>
     static F<Ret<Fn, A>> ap(const F<A> &fa, const F<Fn> &ff)
     {
@@ -43,12 +42,7 @@ private:
     template<typename A>
     using F = Id<A>;
 
-    using Base = Apply<Id>;
-
 public:
-    using Base::map;
-    using Base::ap;
-
     template<typename A>
     static F<A> pure(const A &a)
     {
@@ -62,15 +56,8 @@ private:
     template<typename A>
     using F = Id<A>;
 
-    using Base = Applicative<Id>;
-
 public:
-    using Base::map;
-    using Base::ap;
-    using Base::pure;
-
-    template<typename FA>
-    using ElemType = typename FA::type;
+    using Applicative<Id>::ElemType;
 
     template<typename A, typename Fn>
     static F<ElemType<Ret<Fn, A>>> flatMap(const F<A> &fa, Fn f)

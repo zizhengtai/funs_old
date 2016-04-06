@@ -13,6 +13,9 @@ private:
     using F = std::shared_ptr<A>;
 
 public:
+    template<typename FA>
+    using ElemType = typename FA::element_type;
+
     template<typename A, typename Fn>
     static F<Ret<Fn, A>> map(const F<A> &fa, Fn f)
     {
@@ -28,11 +31,7 @@ private:
     template<typename A>
     using F = std::shared_ptr<A>;
 
-    using Base = Functor<std::shared_ptr>;
-
 public:
-    using Base::map;
-
     template<typename A, typename Fn>
     static F<Ret<Fn, A>> ap(const F<A> &fa, const F<Fn> &ff)
     {
@@ -48,12 +47,7 @@ private:
     template<typename A>
     using F = std::shared_ptr<A>;
 
-    using Base = Apply<std::shared_ptr>;
-
 public:
-    using Base::map;
-    using Base::ap;
-
     template<typename A>
     static F<A> pure(const A &a)
     {
@@ -67,16 +61,7 @@ private:
     template<typename A>
     using F = std::shared_ptr<A>;
 
-    using Base = Applicative<std::shared_ptr>;
-
 public:
-    using Base::map;
-    using Base::ap;
-    using Base::pure;
-
-    template<typename FA>
-    using ElemType = typename FA::element_type;
-
     template<typename A, typename Fn>
     static F<ElemType<Ret<Fn, A>>> flatMap(const F<A> &fa, Fn f)
     {
