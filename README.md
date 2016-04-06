@@ -21,19 +21,23 @@ auto v2 = on(v1)
 // v2 == std::vector<std::string>{"1!", "1!", "4!", "4!", "9!", "9!"}
 ```
 
-## Supported concepts
+## Supported Concepts
 
 * Functor (`map`)
 * Apply (`ap`)
 * Applicative (`pure`)
 * Monad (`flatMap`)
 
-## Default implementations
+## Default Implementations
 
 * `funs::Id`
 * `std::list`
 * `std::vector`
 * `std::shared_ptr`
+
+## Related Projects
+
+Funs is inspired by [Cats](https://github.com/typelevel/cats).
 
 ## License
 
