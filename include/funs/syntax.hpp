@@ -19,17 +19,23 @@ public:
         return std::move(_val);
     }
 
+    // Functor
+
     template<typename Fn>
     FunsOps<F, Ret<Fn, A>, Impl> map(Fn f) const
     {
         return Impl::map(_val, f);
     }
 
+    // Apply
+
     template<typename Fn>
     FunsOps<F, Ret<Fn, A>, Impl> ap(const F<Fn> &ff) const
     {
         return Impl::ap(_val, ff);
     }
+
+    // Monad
 
     template<typename Fn>
     FunsOps<F, typename Impl::template ElemType<Ret<Fn, A>>, Impl> flatMap(Fn f) const

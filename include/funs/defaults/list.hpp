@@ -16,6 +16,8 @@ public:
     template<typename FA>
     using ElemType = typename FA::value_type;
 
+    // Functor
+
     template<typename A, typename Fn>
     static F<Ret<Fn, A>> map(const F<A> &fa, Fn f)
     {
@@ -28,6 +30,8 @@ public:
 
         return fb;
     }
+
+    // Apply
 
     template<typename A, typename Fn>
     static F<Ret<Fn, A>> ap(const F<A> &fa, const F<Fn> &ff)
@@ -44,11 +48,15 @@ public:
         return fb;
     }
 
+    // Applicative
+
     template<typename A>
     static F<A> pure(const A &a)
     {
         return {a};
     }
+
+    // Monad
 
     template<typename A, typename Fn>
     static F<ElemType<Ret<Fn, A>>> flatMap(const F<A> &fa, Fn f)
