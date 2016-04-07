@@ -24,7 +24,7 @@ public:
     template<typename Fn>
     FunsOps<F, Ret<Fn, A>, I> map(Fn f) const
     {
-        return I::map(_val, f);
+        return I::Functor::map(_val, f);
     }
 
     // Apply
@@ -32,7 +32,7 @@ public:
     template<typename Fn>
     FunsOps<F, Ret<Fn, A>, I> ap(const F<Fn> &ff) const
     {
-        return I::ap(_val, ff);
+        return I::Apply::ap(_val, ff);
     }
 
     // Monad
@@ -40,7 +40,7 @@ public:
     template<typename Fn>
     FunsOps<F, typename I::template ElemType<Ret<Fn, A>>, I> flatMap(Fn f) const
     {
-        return I::flatMap(_val, f);
+        return I::Monad::flatMap(_val, f);
     }
 };
 

@@ -7,12 +7,17 @@
 namespace funs {
 
 template<>
-struct Functor<std::vector> {
+struct Impl<std::vector> {
 private:
     template<typename A>
     using F = std::vector<A>;
 
 public:
+    using Functor     = Impl<std::vector>;
+    using Apply       = Impl<std::vector>;
+    using Applicative = Impl<std::vector>;
+    using Monad       = Impl<std::vector>;
+
     template<typename FA>
     using ElemType = typename FA::value_type;
 
@@ -29,15 +34,7 @@ public:
 
         return fb;
     }
-};
 
-template<>
-struct Apply<std::vector> : Functor<std::vector> {
-private:
-    template<typename A>
-    using F = std::vector<A>;
-
-public:
     template<typename A, typename Fn>
     static F<Ret<Fn, A>> ap(const F<A> &fa, const F<Fn> &ff)
     {
@@ -52,29 +49,13 @@ public:
 
         return fb;
     }
-};
 
-template<>
-struct Applicative<std::vector> : Apply<std::vector> {
-private:
-    template<typename A>
-    using F = std::vector<A>;
-
-public:
     template<typename A>
     static F<A> pure(const A &x)
     {
         return {x};
     }
-};
 
-template<>
-struct Monad<std::vector> : Applicative<std::vector> {
-private:
-    template<typename A>
-    using F = std::vector<A>;
-
-public:
     template<typename A, typename Fn>
     static F<ElemType<Ret<Fn, A>>> flatMap(const F<A> &fa, Fn f)
     {
@@ -88,10 +69,6 @@ public:
 
         return fb;
     }
-};
-
-template<>
-struct Impl<std::vector> : Monad<std::vector> {
 };
 
 }

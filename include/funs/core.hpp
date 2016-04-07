@@ -2,7 +2,6 @@
 #define FUNS_CORE_HPP
 
 #include <type_traits>
-#include <iostream>
 
 namespace funs {
 
@@ -34,18 +33,6 @@ Id<T> makeId(const T &t)
 {
     return t;
 }
-
-template<template <typename...> class F>
-struct Functor;
-
-template<template <typename...> class F>
-struct Apply;
-
-template<template <typename...> class F>
-struct Applicative;
-
-template<template <typename...> class F>
-struct Monad;
 
 template<template <typename...> class F>
 struct Impl;

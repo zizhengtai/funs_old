@@ -7,12 +7,17 @@
 namespace funs {
 
 template<>
-struct Functor<std::shared_ptr> {
+struct Impl<std::shared_ptr> {
 private:
     template<typename A>
     using F = std::shared_ptr<A>;
 
 public:
+    using Functor     = Impl<std::shared_ptr>;
+    using Apply       = Impl<std::shared_ptr>;
+    using Applicative = Impl<std::shared_ptr>;
+    using Monad       = Impl<std::shared_ptr>;
+
     template<typename FA>
     using ElemType = typename FA::element_type;
 
@@ -23,15 +28,7 @@ public:
 
         return fa == nullptr ? F<B>() : std::make_shared<B>(f(*fa));
     }
-};
 
-template<>
-struct Apply<std::shared_ptr> : Functor<std::shared_ptr> {
-private:
-    template<typename A>
-    using F = std::shared_ptr<A>;
-
-public:
     template<typename A, typename Fn>
     static F<Ret<Fn, A>> ap(const F<A> &fa, const F<Fn> &ff)
     {
@@ -39,29 +36,13 @@ public:
 
         return ff == nullptr ? F<B>() : map(fa, *ff);
     }
-};
 
-template<>
-struct Applicative<std::shared_ptr> : Apply<std::shared_ptr> {
-private:
-    template<typename A>
-    using F = std::shared_ptr<A>;
-
-public:
     template<typename A>
     static F<A> pure(const A &x)
     {
         return std::make_shared<A>(x);
     }
-};
 
-template<>
-struct Monad<std::shared_ptr> : Applicative<std::shared_ptr> {
-private:
-    template<typename A>
-    using F = std::shared_ptr<A>;
-
-public:
     template<typename A, typename Fn>
     static F<ElemType<Ret<Fn, A>>> flatMap(const F<A> &fa, Fn f)
     {
@@ -69,10 +50,6 @@ public:
 
         return fa == nullptr ? F<B>() : f(*fa);
     }
-};
-
-template<>
-struct Impl<std::shared_ptr> : Monad<std::shared_ptr> {
 };
 
 }

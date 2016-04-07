@@ -7,12 +7,17 @@
 namespace funs {
 
 template<>
-struct Functor<std::list> {
+struct Impl<std::list> {
 private:
     template<typename A>
     using F = std::list<A>;
 
 public:
+    using Functor     = Impl<std::list>;
+    using Apply       = Impl<std::list>;
+    using Applicative = Impl<std::list>;
+    using Monad       = Impl<std::list>;
+
     template<typename FA>
     using ElemType = typename FA::value_type;
 
@@ -28,15 +33,7 @@ public:
 
         return fb;
     }
-};
 
-template<>
-struct Apply<std::list> : Functor<std::list> {
-private:
-    template<typename A>
-    using F = std::list<A>;
-
-public:
     template<typename A, typename Fn>
     static F<Ret<Fn, A>> ap(const F<A> &fa, const F<Fn> &ff)
     {
@@ -51,29 +48,13 @@ public:
 
         return fb;
     }
-};
 
-template<>
-struct Applicative<std::list> : Apply<std::list> {
-private:
-    template<typename A>
-    using F = std::list<A>;
-
-public:
     template<typename A>
     static F<A> pure(const A &x)
     {
         return {x};
     }
-};
 
-template<>
-struct Monad<std::list> : Applicative<std::list> {
-private:
-    template<typename A>
-    using F = std::list<A>;
-
-public:
     template<typename A, typename Fn>
     static F<ElemType<Ret<Fn, A>>> flatMap(const F<A> &fa, Fn f)
     {
@@ -87,10 +68,6 @@ public:
 
         return fb;
     }
-};
-
-template<>
-struct Impl<std::list> : Monad<std::list> {
 };
 
 }
