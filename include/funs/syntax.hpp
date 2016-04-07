@@ -42,6 +42,20 @@ public:
     {
         return I::Monad::flatMap(_val, f);
     }
+
+    // Foldable
+    
+    template<typename B, typename Fn>
+    B foldLeft(const B &z, Fn op) const
+    {
+        return I::Foldable::foldLeft(_val, z, op);
+    }
+
+    template<typename B, typename Fn>
+    B foldRight(const B &z, Fn op) const
+    {
+        return I::Foldable::foldRight(_val, z, op);
+    }
 };
 
 template<typename FF, template <typename...> class F, typename A>
