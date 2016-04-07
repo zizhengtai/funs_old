@@ -40,7 +40,7 @@ public:
             return std::make_shared<A>(x);
         }
 
-        template<typename A, typename Fn, typename B = ElemType<Ret<Fn, A>>>
+        template<typename A, typename Fn, typename B = typename HKT<Ret<Fn, A>>::A>
         static F<B> flatMap(const F<A> &fa, Fn f)
         {
             return fa == nullptr ? F<B>() : f(*fa);
@@ -69,8 +69,8 @@ public:
         template<typename A,
                  typename Fn,
                  typename IG = ImplType<Ret<Fn, A>>,
-                 template <typename...> class G = FType<Ret<Fn, A>>::template type,
-                 typename B = ElemType<Ret<Fn, A>>>
+                 template <typename...> class G = HKT<Ret<Fn, A>>::template F,
+                 typename B = typename HKT<Ret<Fn, A>>::A>
         static G<F<B>> traverse(const F<A> &fa, Fn f)
         {
             if (fa == nullptr) {

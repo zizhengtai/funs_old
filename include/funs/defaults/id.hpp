@@ -40,7 +40,7 @@ public:
             return x;
         }
 
-        template<typename A, typename Fn, typename B = ElemType<Ret<Fn, A>>>
+        template<typename A, typename Fn, typename B = typename HKT<Ret<Fn, A>>::Param>
         static F<B> flatMap(const F<A> &fa, Fn f)
         {
             return f(fa.val);
@@ -69,11 +69,20 @@ public:
         template<typename A,
                  typename Fn,
                  typename IG = ImplType<Ret<Fn, A>>,
-                 template <typename...> class G = FType<Ret<Fn, A>>::template type,
-                 typename B = ElemType<Ret<Fn, A>>>
+                 template <typename...> class G = HKT<Ret<Fn, A>>::template Cons,
+                 typename B = typename HKT<Ret<Fn, A>>::Param>
         static G<F<B>> traverse(const F<A> &fa, Fn f)
         {
             return IG::Applicative::map(f(fa.val), Applicative::pure<B>);
+        }
+
+        template<typename A,
+                 template <typename...> class G,
+                 typename IG = Impl<G>>
+        static G<F<A>> sequence(const F<G<A>> &fga)
+        {
+            const auto identity = [](const G<A> &ga) { return ga; };
+            return traverse<A, decltype(identity), IG>(fga, identity);
         }
     };
 };

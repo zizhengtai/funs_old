@@ -6,28 +6,44 @@
 
 namespace funs {
 
+// Default implementation for F
+template<template <typename...> class F>
+struct Impl;
+ 
+namespace detail {
+
+template<typename>
+struct _HKT;
+
+template<template <typename...> class F, typename A, typename... Args>
+struct _HKT<F<A, Args...>> {
+    template<typename... B>
+    using Cons = F<B...>;
+
+    using Param = A;
+};
+
+template<typename>
+struct _ImplType;
+
+template<template <typename...> class F, typename A, typename... Args>
+struct _ImplType<F<A, Args...>> {
+    using type = Impl<F>;
+};
+
+}
+
+// Return type of Fn(Args...)
 template<typename Fn, typename... Args>
 using Ret = typename std::result_of<Fn(Args...)>::type;
 
+// Trait for higher-kinded types
 template<typename FA>
-struct FType;
+using HKT = detail::_HKT<typename std::decay<FA>::type>;
 
-template<template <typename...> class F, typename... A>
-struct FType<F<A...>> {
-    template<typename... B>
-    using type = F<B...>;
-};
-
+// Returns Impl<F> given F<A>
 template<typename FA>
-struct _ElemType;
-
-template<template <typename...> class F, typename A, typename... B>
-struct _ElemType<F<A, B...>> {
-    using type = A;
-};
-
-template<typename FA>
-using ElemType = typename _ElemType<FA>::type;
+using ImplType = typename detail::_ImplType<typename std::decay<FA>::type>::type;
 
 template<typename T>
 struct Id {
@@ -60,26 +76,6 @@ Id<T> makeId(const T &x)
 {
     return x;
 }
-
-template<typename T>
-constexpr auto identity(T &&x) noexcept -> decltype(std::forward<T>(x))
-{
-    return std::forward<T>(x);
-}
-
-template<template <typename...> class F>
-struct Impl;
-
-template<typename FA>
-struct _ImplType;
-
-template<template <typename...> class F, typename... A>
-struct _ImplType<F<A...>> {
-    using type = Impl<F>;
-};
-
-template<typename FA>
-using ImplType = typename _ImplType<FA>::type;
 
 }
 

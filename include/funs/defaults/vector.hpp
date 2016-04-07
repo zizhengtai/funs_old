@@ -54,11 +54,9 @@ public:
             return {x};
         }
 
-        template<typename A, typename Fn>
-        static F<ElemType<Ret<Fn, A>>> flatMap(const F<A> &fa, Fn f)
+        template<typename A, typename Fn, typename B = typename HKT<Ret<Fn, A>>::Param>
+        static F<B> flatMap(const F<A> &fa, Fn f)
         {
-            using B = ElemType<Ret<Fn, A>>;
-
             F<B> fb;
             for (const auto &a: fa) {
                 const auto fa2 = f(a);

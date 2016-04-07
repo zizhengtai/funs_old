@@ -5,24 +5,25 @@
 
 namespace funs {
 
-template<template <typename...> class F, typename A, typename I>
+template<typename FA, typename I,
+         template <typename...> class F = HKT<FA>::template Cons,
+         typename A = typename HKT<FA>::Param>
 struct FunsOps {
 private:
-    F<A> _val;
+    FA _val;
 
 public:
-    FunsOps<F, A, I>(const F<A> &fa) : _val(fa) {}
-    FunsOps<F, A, I>(F<A> &&fa) : _val(std::move(fa)) {}
+    FunsOps<FA, I, F, A>(FA &&fa) : _val(std::forward<FA>(fa)) {}
 
-    F<A> val()
+    FA val()
     {
-        return std::move(_val);
+        return std::forward<FA>(_val);
     }
 
     // Functor
 
     template<typename Fn, typename B = Ret<Fn, A>>
-    FunsOps<F, B, I> map(Fn f) const
+    FunsOps<F<B>, I> map(Fn f) const
     {
         return I::Functor::template map<A, Fn, B>(_val, f);
     }
@@ -30,15 +31,15 @@ public:
     // Apply
 
     template<typename Fn, typename B = Ret<Fn, A>>
-    FunsOps<F, B, I> ap(const F<Fn> &ff) const
+    FunsOps<F<B>, I> ap(const F<Fn> &ff) const
     {
         return I::Apply::template ap<A, Fn, B>(_val, ff);
     }
 
     // Monad
 
-    template<typename Fn, typename B = ElemType<Ret<Fn, A>>>
-    FunsOps<F, B, I> flatMap(Fn f) const
+    template<typename Fn, typename B = typename HKT<Ret<Fn, A>>::Param>
+    FunsOps<F<B>, I> flatMap(Fn f) const
     {
         return I::Monad::template flatMap<A, Fn, B>(_val, f);
     }
@@ -60,24 +61,27 @@ public:
     // Traverse
     template<typename Fn,
              typename IG = ImplType<Ret<Fn, A>>,
-             template <typename...> class G = FType<Ret<Fn, A>>::template type,
-             typename B = ElemType<Ret<Fn, A>>>
-    FunsOps<G, F<B>, I> traverse(Fn f) const
+             template <typename...> class G = HKT<Ret<Fn, A>>::template Cons,
+             typename B = typename HKT<Ret<Fn, A>>::Param>
+    FunsOps<G<F<B>>, I> traverse(Fn f) const
     {
         return I::Traverse::template traverse<A, Fn, IG, G, B>(_val, f);
     }
 };
 
+/*
 template<typename FF, template <typename...> class F, typename A>
 FunsOps<F, A, FF> on(const F<A> &fa)
 {
     return FunsOps<F, A, FF>(fa);
 }
+*/
 
-template<template <typename...> class F, typename A>
-FunsOps<F, A, Impl<F>> on(const F<A> &fa)
+template<typename FA,
+         template <typename...> class F = HKT<FA>::template Cons>
+FunsOps<FA, ImplType<FA>> on(FA &&fa)
 {
-    return FunsOps<F, A, Impl<F>>(fa);
+    return FunsOps<FA, ImplType<FA>>(std::forward<FA>(fa));
 }
 
 }
