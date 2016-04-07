@@ -37,7 +37,7 @@ public:
 
     // Monad
 
-    template<typename Fn, typename B = typename ElemType<Ret<Fn, A>>::type>
+    template<typename Fn, typename B = ElemType<Ret<Fn, A>>>
     FunsOps<F, B, I> flatMap(Fn f) const
     {
         return I::Monad::template flatMap<A, Fn, B>(_val, f);
@@ -61,7 +61,7 @@ public:
     template<typename Fn,
              typename IG = typename ImplType<Ret<Fn, A>>::type,
              template <typename...> class G = FType<Ret<Fn, A>>::template type,
-             typename B = typename ElemType<Ret<Fn, A>>::type>
+             typename B = ElemType<Ret<Fn, A>>>
     FunsOps<G, F<B>, I> traverse(Fn f) const
     {
         return I::Traverse::template traverse<A, Fn, IG, G, B>(_val, f);

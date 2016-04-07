@@ -9,11 +9,25 @@ namespace funs {
 template<typename Fn, typename... Args>
 using Ret = typename std::result_of<Fn(Args...)>::type;
 
-template<typename>
+template<typename FA>
 struct FType;
 
-template<typename>
-struct ElemType;
+template<template <typename...> class F, typename... A>
+struct FType<F<A...>> {
+    template<typename... B>
+    using type = F<B...>;
+};
+
+template<typename FA>
+struct _ElemType;
+
+template<template <typename...> class F, typename A, typename... B>
+struct _ElemType<F<A, B...>> {
+    using type = A;
+};
+
+template<typename FA>
+using ElemType = typename _ElemType<FA>::type;
 
 template<typename T>
 struct Id {
@@ -32,6 +46,12 @@ struct Id {
     operator T() const
     {
         return val;
+    }
+
+    template<typename Fn>
+    void foreach(Fn f) const
+    {
+        f(val);
     }
 };
 

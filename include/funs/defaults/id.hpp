@@ -6,17 +6,6 @@
 
 namespace funs {
 
-template<typename A>
-struct FType<Id<A>> {
-    template<typename B>
-    using type = Id<B>;
-};
-
-template<typename A>
-struct ElemType<Id<A>> {
-    using type = A;
-};
-
 template<>
 struct Impl<Id> {
 private:
@@ -51,7 +40,7 @@ public:
             return x;
         }
 
-        template<typename A, typename Fn, typename B = typename ElemType<Ret<Fn, A>>::type>
+        template<typename A, typename Fn, typename B = ElemType<Ret<Fn, A>>>
         static F<B> flatMap(const F<A> &fa, Fn f)
         {
             return f(fa.val);
@@ -81,7 +70,7 @@ public:
                  typename Fn,
                  typename IG = typename ImplType<Ret<Fn, A>>::type,
                  template <typename...> class G = FType<Ret<Fn, A>>::template type,
-                 typename B = typename ElemType<Ret<Fn, A>>::type>
+                 typename B = ElemType<Ret<Fn, A>>>
         static G<F<B>> traverse(const F<A> &fa, Fn f)
         {
             return IG::Applicative::map(f(fa.val), Applicative::pure<B>);

@@ -6,17 +6,6 @@
 
 namespace funs {
 
-template<typename... A>
-struct FType<std::vector<A...>> {
-    template<typename... B>
-    using type = std::vector<B...>;
-};
-
-template<typename A>
-struct ElemType<std::vector<A>> {
-    using type = A;
-};
-
 template<>
 struct Impl<std::vector> {
 private:

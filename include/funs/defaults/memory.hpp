@@ -13,43 +13,73 @@ private:
     using F = std::shared_ptr<A>;
 
 public:
-    using Functor     = Impl<std::shared_ptr>;
-    using Apply       = Impl<std::shared_ptr>;
-    using Applicative = Impl<std::shared_ptr>;
-    using Monad       = Impl<std::shared_ptr>;
+    struct Monad;
+    using Functor     = Monad;
+    using Apply       = Monad;
+    using Applicative = Monad;
 
-    template<typename FA>
-    using ElemType = typename FA::element_type;
+    struct Traverse;
+    using Foldable = Traverse;
 
-    template<typename A, typename Fn>
-    static F<Ret<Fn, A>> map(const F<A> &fa, Fn f)
-    {
-        using B = Ret<Fn, A>;
+    struct Monad {
+        template<typename A, typename Fn, typename B = Ret<Fn, A>>
+        static F<B> map(const F<A> &fa, Fn f)
+        {
+            return fa == nullptr ? F<B>() : std::make_shared<B>(f(*fa));
+        }
 
-        return fa == nullptr ? F<B>() : std::make_shared<B>(f(*fa));
-    }
+        template<typename A, typename Fn, typename B = Ret<Fn, A>>
+        static F<B> ap(const F<A> &fa, const F<Fn> &ff)
+        {
+            return ff == nullptr ? F<B>() : map(fa, *ff);
+        }
 
-    template<typename A, typename Fn>
-    static F<Ret<Fn, A>> ap(const F<A> &fa, const F<Fn> &ff)
-    {
-        using B = Ret<Fn, A>;
+        template<typename A>
+        static F<A> pure(const A &x)
+        {
+            return std::make_shared<A>(x);
+        }
 
-        return ff == nullptr ? F<B>() : map(fa, *ff);
-    }
+        template<typename A, typename Fn, typename B = ElemType<Ret<Fn, A>>>
+        static F<B> flatMap(const F<A> &fa, Fn f)
+        {
+            return fa == nullptr ? F<B>() : f(*fa);
+        }
 
-    template<typename A>
-    static F<A> pure(const A &x)
-    {
-        return std::make_shared<A>(x);
-    }
+        template<typename A>
+        static F<A> flatten(const F<F<A>> &ffa)
+        {
+            return ffa == nullptr ? F<A>() : *ffa;
+        }
+    };
 
-    template<typename A, typename Fn>
-    static F<ElemType<Ret<Fn, A>>> flatMap(const F<A> &fa, Fn f)
-    {
-        using B = ElemType<Ret<Fn, A>>;
+    struct Traverse {
+        template<typename A, typename B, typename Fn>
+        static B foldLeft(const F<A> &fa, const B &z, Fn op)
+        {
+            return fa == nullptr ? z : op(z, *fa);
+        }
 
-        return fa == nullptr ? F<B>() : f(*fa);
-    }
+        template<typename A, typename B, typename Fn>
+        static B foldRight(const F<A> &fa, const B &z, Fn op)
+        {
+            return fa == nullptr ? z : op(*fa, z);
+        }
+
+        template<typename A,
+                 typename Fn,
+                 typename IG = typename ImplType<Ret<Fn, A>>::type,
+                 template <typename...> class G = FType<Ret<Fn, A>>::template type,
+                 typename B = ElemType<Ret<Fn, A>>>
+        static G<F<B>> traverse(const F<A> &fa, Fn f)
+        {
+            if (fa == nullptr) {
+                return IG::Applicative::pure(F<B>());
+            } else {
+                return IG::Applicative::map(f(*fa), Applicative::pure<B>);
+            }
+        }
+    };
 };
 
 }
