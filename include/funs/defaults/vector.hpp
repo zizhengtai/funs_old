@@ -6,6 +6,17 @@
 
 namespace funs {
 
+template<typename... A>
+struct FType<std::vector<A...>> {
+    template<typename... B>
+    using type = std::vector<B...>;
+};
+
+template<typename A>
+struct ElemType<std::vector<A>> {
+    using type = A;
+};
+
 template<>
 struct Impl<std::vector> {
 private:
@@ -13,9 +24,6 @@ private:
     using F = std::vector<A>;
 
 public:
-    template<typename FA>
-    using ElemType = typename FA::value_type;
-
     struct Monad;
     using Functor     = Monad;
     using Apply       = Monad;

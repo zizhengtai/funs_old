@@ -9,6 +9,12 @@ namespace funs {
 template<typename Fn, typename... Args>
 using Ret = typename std::result_of<Fn(Args...)>::type;
 
+template<typename>
+struct FType;
+
+template<typename>
+struct ElemType;
+
 template<typename T>
 struct Id {
     using type = T;
@@ -43,6 +49,14 @@ constexpr auto identity(T &&x) noexcept -> decltype(std::forward<T>(x))
 
 template<template <typename...> class F>
 struct Impl;
+
+template<typename FA>
+struct ImplType;
+
+template<template <typename...> class F, typename... A>
+struct ImplType<F<A...>> {
+    using type = Impl<F>;
+};
 
 }
 

@@ -21,26 +21,26 @@ public:
 
     // Functor
 
-    template<typename Fn>
-    FunsOps<F, Ret<Fn, A>, I> map(Fn f) const
+    template<typename Fn, typename B = Ret<Fn, A>>
+    FunsOps<F, B, I> map(Fn f) const
     {
-        return I::Functor::map(_val, f);
+        return I::Functor::template map<A, Fn, B>(_val, f);
     }
 
     // Apply
 
-    template<typename Fn>
-    FunsOps<F, Ret<Fn, A>, I> ap(const F<Fn> &ff) const
+    template<typename Fn, typename B = Ret<Fn, A>>
+    FunsOps<F, B, I> ap(const F<Fn> &ff) const
     {
-        return I::Apply::ap(_val, ff);
+        return I::Apply::template ap<A, Fn, B>(_val, ff);
     }
 
     // Monad
 
-    template<typename Fn>
-    FunsOps<F, typename I::template ElemType<Ret<Fn, A>>, I> flatMap(Fn f) const
+    template<typename Fn, typename B = typename ElemType<Ret<Fn, A>>::type>
+    FunsOps<F, B, I> flatMap(Fn f) const
     {
-        return I::Monad::flatMap(_val, f);
+        return I::Monad::template flatMap<A, Fn, B>(_val, f);
     }
 
     // Foldable
@@ -48,13 +48,23 @@ public:
     template<typename B, typename Fn>
     B foldLeft(const B &z, Fn op) const
     {
-        return I::Foldable::foldLeft(_val, z, op);
+        return I::Foldable::template foldLeft<A, B, Fn>(_val, z, op);
     }
 
     template<typename B, typename Fn>
     B foldRight(const B &z, Fn op) const
     {
-        return I::Foldable::foldRight(_val, z, op);
+        return I::Foldable::template foldRight<A, B, Fn>(_val, z, op);
+    }
+
+    // Traverse
+    template<typename Fn,
+             typename IG = typename ImplType<Ret<Fn, A>>::type,
+             template <typename...> class G = FType<Ret<Fn, A>>::template type,
+             typename B = typename ElemType<Ret<Fn, A>>::type>
+    FunsOps<G, F<B>, I> traverse(Fn f) const
+    {
+        return I::Traverse::template traverse<A, Fn, IG, G, B>(_val, f);
     }
 };
 
