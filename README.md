@@ -23,12 +23,20 @@ auto v2 = on(v1)
 
 ## Supported Concepts
 
-* Functor (`map`)
-* Apply (`ap`)
-* Applicative (`pure`)
-* Monad (`flatMap`, `flatten`)
-* Foldable (`foldLeft`, `foldRight`)
-* Traverse (`traverse`)
+* Functor
+    * `map`
+* Apply
+    * `ap`
+* Applicative
+    * `pure`
+* Monad
+    * `flatMap`
+    * `flatten`
+* Foldable
+    * `foldLeft`
+    * `foldRight`
+* Traverse
+    * `traverse`
 
 ## Default Implementations
 
