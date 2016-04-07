@@ -11,8 +11,8 @@ private:
     F<A> _val;
 
 public:
-    FunsOps<F, A>(const F<A> &fa) : _val(fa) {}
-    FunsOps<F, A>(F<A> &&fa) : _val(std::move(fa)) {}
+    FunsOps<F, A, I>(const F<A> &fa) : _val(fa) {}
+    FunsOps<F, A, I>(F<A> &&fa) : _val(std::move(fa)) {}
 
     F<A> val()
     {
