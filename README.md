@@ -21,22 +21,14 @@ auto v2 = on(v1)
 // v2 == std::vector<std::string>{"1!", "1!", "4!", "4!", "9!", "9!"}
 ```
 
-## Supported Concepts
+## Typeclasses
 
-* Functor
-    * `map`
-* Apply
-    * `ap`
-* Applicative
-    * `pure`
-* Monad
-    * `flatMap`
-    * `flatten`
-* Foldable
-    * `foldLeft`
-    * `foldRight`
-* Traverse
-    * `traverse`
+* `Functor` (`map`)
+* `Apply` (`ap`)
+* `Applicative` (`pure`)
+* `Monad` (`flatMap` `flatten`)
+* `Foldable` (`foldLeft` `foldRight`)
+* `Traverse` (`traverse`)
 
 ## Default Implementations
 
