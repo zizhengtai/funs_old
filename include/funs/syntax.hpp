@@ -69,16 +69,7 @@ public:
     }
 };
 
-/*
-template<typename FF, template <typename...> class F, typename A>
-FunsOps<F, A, FF> on(const F<A> &fa)
-{
-    return FunsOps<F, A, FF>(fa);
-}
-*/
-
-template<typename FA,
-         template <typename...> class F = HKT<FA>::template Cons>
+template<typename FA>
 FunsOps<FA, ImplType<FA>> on(FA &&fa)
 {
     return FunsOps<FA, ImplType<FA>>(std::forward<FA>(fa));
