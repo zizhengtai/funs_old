@@ -2,6 +2,7 @@
 #define FUNS_CORE_HPP
 
 #include <type_traits>
+#include <utility>
 
 namespace funs {
 
@@ -15,12 +16,12 @@ struct Id {
     const T val;
 
     // Copy constructors
-    Id(const T &value) : val(value) {}
-    Id(const Id<T> &that) : val(that.val) {}
+    Id(const T &x) : val(x) {}
+    Id(const Id<T> &x) : val(x.val) {}
 
     // Move constructors
-    Id(T &&value) : val(std::move(value)) {}
-    Id(Id<T> &&that) : val(std::move(that.val)) {}
+    Id(T &&x) : val(std::move(x)) {}
+    Id(Id<T> &&x) : val(std::move(x.val)) {}
 
     operator T() const
     {
@@ -29,9 +30,15 @@ struct Id {
 };
 
 template<typename T>
-Id<T> makeId(const T &t)
+Id<T> makeId(const T &x)
 {
-    return t;
+    return x;
+}
+
+template<typename T>
+constexpr auto identity(T &&x) noexcept -> decltype(std::forward<T>(x))
+{
+    return std::forward<T>(x);
 }
 
 template<template <typename...> class F>
