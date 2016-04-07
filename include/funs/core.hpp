@@ -71,12 +71,15 @@ template<template <typename...> class F>
 struct Impl;
 
 template<typename FA>
-struct ImplType;
+struct _ImplType;
 
 template<template <typename...> class F, typename... A>
-struct ImplType<F<A...>> {
+struct _ImplType<F<A...>> {
     using type = Impl<F>;
 };
+
+template<typename FA>
+using ImplType = typename _ImplType<FA>::type;
 
 }
 

@@ -59,7 +59,7 @@ public:
 
     // Traverse
     template<typename Fn,
-             typename IG = typename ImplType<Ret<Fn, A>>::type,
+             typename IG = ImplType<Ret<Fn, A>>,
              template <typename...> class G = FType<Ret<Fn, A>>::template type,
              typename B = ElemType<Ret<Fn, A>>>
     FunsOps<G, F<B>, I> traverse(Fn f) const
