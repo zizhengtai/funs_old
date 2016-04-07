@@ -26,7 +26,9 @@ auto v2 = on(v1)
 * Functor (`map`)
 * Apply (`ap`)
 * Applicative (`pure`)
-* Monad (`flatMap`)
+* Monad (`flatMap`, `flatten`)
+* Foldable (`foldLeft`, `foldRight`)
+* Traverse (`traverse`)
 
 ## Default Implementations
 
