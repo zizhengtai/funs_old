@@ -34,6 +34,12 @@ public:
             return ff.val(fa.val);
         }
 
+        template<typename A, typename B, typename Fn, typename C = Ret<Fn, A, B>>
+        static F<C> map2(const F<A> &fa, const F<B> &fb, Fn f)
+        {
+            return f(fa.val, fb.val);
+        }
+
         template<typename A>
         static F<A> pure(const A &x)
         {
@@ -74,15 +80,6 @@ public:
         static G<F<B>> traverse(const F<A> &fa, Fn f)
         {
             return IG::Applicative::map(f(fa.val), Applicative::pure<B>);
-        }
-
-        template<typename A,
-                 template <typename...> class G,
-                 typename IG = Impl<G>>
-        static G<F<A>> sequence(const F<G<A>> &fga)
-        {
-            const auto identity = [](const G<A> &ga) { return ga; };
-            return traverse<A, decltype(identity), IG>(fga, identity);
         }
     };
 };

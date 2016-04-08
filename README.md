@@ -35,6 +35,7 @@ auto v2 = on(v1)
 * `funs::Id`
 * `std::list`
 * `std::vector`
+* `std::unique_ptr`
 * `std::shared_ptr`
 
 ## Related Projects
